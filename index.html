@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Belle Ateliê - Painel de Controle</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f7fb; color: #333; display: flex; }
+        
+        .sidebar { width: 260px; height: 100vh; background-color: #1e293b; color: #fff; padding: 20px; position: fixed; }
+        .sidebar h2 { font-size: 20px; margin-bottom: 30px; text-align: center; color: #38bdf8; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { padding: 12px 15px; margin-bottom: 8px; background: #334155; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .sidebar ul li:hover, .sidebar ul li.active { background-color: #38bdf8; color: #1e293b; font-weight: bold; }
+
+        .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; }
+        .header h1 { font-size: 26px; color: #0f172a; }
+        
+        .cards-container { display: flex; gap: 20px; margin-bottom: 30px; }
+        .card { flex: 1; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 5px solid #38bdf8; }
+        .card.alert { border-left-color: #ef4444; background-color: #fef2f2; }
+        .card h3 { font-size: 14px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .card p { font-size: 24px; font-weight: bold; color: #1e293b; }
+
+        .form-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: flex-end; }
+        .form-group { flex: 1; }
+        .form-group.wide { flex: 2; }
+        .form-group label { font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; transition: 0.2s; }
+        .form-group input:focus { border-color: #38bdf8; }
+        .form-container button { background-color: #38bdf8; color: #1e293b; border: none; padding: 11px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .form-container button:hover { background-color: #0ea5e9; }
+
+        .section-title { font-size: 18px; margin-bottom: 15px; color: #1e293b; display: flex; align-items: center; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        th, td { padding: 12px 15px; text-align: left; }
+        th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 12px; }
+        tr { border-bottom: 1px solid #e2e8f0; transition: 0.2s; }
+        tr:last-child { border-bottom: none; }
+        tr:hover { background-color: #f8fafc; }
+        
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .badge.processando { background-color: #fef3c7; color: #d97706; }
+        .badge.critico { background-color: #fee2e2; color: #dc2626; }
+        .badge.ok { background-color: #dcfce7; color: #16a34a; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <img src="LogoAtelie.png" alt="Logo La Belle Ateliê" style="width: 100%; max-width: 120px; display: block; margin: 0 auto 15px auto; border-radius: 8px;">
+        <h2>La Belle Ateliê</h2>
+        <ul>
+            <li class="active">Painel Principal</li>
+            <li>Ordens de Serviço</li>
+            <li>Controle de Estoque</li>
+            <li>Configurações</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Sistema de Gestão de Economia Criativa</h1>
+            <span style="color: #64748b; font-weight: 500;">Operador: Artesã</span>
+        </div>
+
+        <div class="cards-container">
+            <div class="card">
+                <h3>Pedidos em Produção</h3>
+                <p id="total-ordens">0</p>
+            </div>
+            <div class="card alert">
+                <h3>Alertas de Estoque Crítico</h3>
+                <p>2 Insumos</p>
+            </div>
+            <div class="card">
+                <h3>Entregas Pendentes</h3>
+                <p>04 Hoje</p>
+            </div>
+        </div>
+
+        <div class="section-title">➕ Registrar Nova Ordem de Serviço</div>
+        <div class="form-container">
+            <div class="form-group">
+                <label>Nome do Cliente</label>
+                <input type="text" id="input-cliente" placeholder="Ex: Maria Oliveira">
+            </div>
+            <div class="form-group">
+                <label>Produto Customizado</label>
+                <input type="text" id="input-produto" placeholder="Ex: Agenda 2027">
+            </div>
+            <div class="form-group wide">
+                <label>Atributos de Customização</label>
+                <input type="text" id="input-specs" placeholder="Ex: Capa Holográfica, Miolo Pontilhado, Wire-o Prata">
+            </div>
+            <button onclick="adicionarOrdem()">Cadastrar</button>
+        </div>
+
+        <div class="section-title">📋 Últimas Ordens de Serviço (Atributos Dinâmicos)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Produto Customizado</th>
+                    <th>Especificações (Laminação/Capa/Wire-o)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-ordens">
+            </tbody>
+        </table>
+
+        <div class="section-title">📦 Monitoramento de Matéria-Prima</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item de Insumo</th>
+                    <th>Categoria</th>
+                    <th>Quantidade Atual</th>
+                    <th>Status Mínimo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Papel Fotográfico Glossy 180g</td>
+                    <td>Papéis Especiais</td>
+                    <td>15 folhas</td>
+                    <td><span class="badge critico">Crítico (Mín: 50)</span></td>
+                </tr>
+                <tr>
+                    <td>Garra Wire-o 1" Branca</td>
+                    <td>Encadernação</td>
+                    <td>8 unidades</td>
+                    <td><span class="badge critico">Crítico (Mín: 20)</span></td>
+                </tr>
+                <tr>
+                    <td>Vinil Adesivo Transparente</td>
+                    <td>Películas</td>
+                    <td>120 metros</td>
+                    <td><span class="badge ok">Estável</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const ordensServico = [
+            {
+                cliente: "Ana Silva",
+                produto: "Agenda 2027 Permanente",
+                specs: "Capa dura, Laminação Caquinho, Wire-o Bronze 1\"",
+                status: "Em Produção"
+            },
+            {
+                cliente: "Marcos Souza",
+                produto: "Caderno Universitário",
+                specs: "Capa Holográfica, Miolo Pautado, Wire-o Preto 1 1/8\"",
+                status: "Aguardando Insumo"
+            }
+        ];
+
+        function renderizarTabela() {
+            const tbody = document.getElementById("tabela-ordens");
+            tbody.innerHTML = "";
+
+            ordensServico.forEach(ordem => {
+                const tr = document.createElement("tr");
+                
+                tr.innerHTML = `
+                    <td>${ordem.cliente}</td>
+                    <td>${ordem.produto}</td>
+                    <td>${ordem.specs}</td>
+                    <td><span class="badge processando">${ordem.status}</span></td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById("total-ordens").innerText = `${ordensServico.length} Ordens`;
+        }
+
+        function adicionarOrdem() {
+            const clienteInput = document.getElementById("input-cliente");
+            const produtoInput = document.getElementById("input-produto");
+            const specsInput = document.getElementById("input-specs");
+
+            if (!clienteInput.value || !produtoInput.value || !specsInput.value) {
+                alert("Por favor, preencha todos os campos do formulário.");
+                return;
+            }
+
+            const novaOrdem = {
+                cliente: clienteInput.value,
+                produto: produtoInput.value,
+                specs: specsInput.value,
+                status: "Em Produção"
+            };
+
+            ordensServico.push(novaOrdem);
+
+            clienteInput.value = "";
+            produtoInput.value = "";
+            specsInput.value = "";
+
+            renderizarTabela();
+        }
+
+        renderizarTabela();
+    </script>
+
+</body>
+</html>
